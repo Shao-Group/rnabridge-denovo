@@ -10,4 +10,4 @@ bridge2fa: bridge2fa.cpp
 	$(CC) $(CXXFLAGS) -o bridge2fa bridge2fa.cpp
 
 graph_align: graph_align.cpp
-	$(CC) $(CXXFLAGS) -march=native -L ./lib -lbifrost -pthread -lz -Wextra -o graph_align graph_align.cpp
+	$(CC) $(CXXFLAGS) -march=native -lbifrost -pthread -lz -Wextra -o graph_align graph_align.cpp

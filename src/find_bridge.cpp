@@ -601,175 +601,172 @@ int main(int argc, char *argv[])
     
     int tmpcnt = 0;
     printf("Graph Build Finish Vertex = %d, Edge = %d\n", n<<1, edgecnt);
-    for(int i = 0; i < n; i++)
-        if(h[i<<1] || h[(i<<1)+1])
-            tmpcnt++;
-    printf("%d\n", tmpcnt);
-    // ifstream query(argv[2]);
+    
+    ifstream query(argv[2]);
 
-    // for(int i = 0; i < (n<<1); i++)
-    // {
-    //     vst[i] = -1;
-    //     inpq[i] = -1;
-    // }
+    for(int i = 0; i < (n<<1); i++)
+    {
+        vst[i] = -1;
+        inpq[i] = -1;
+    }
 
-    // int prevs = -1;
-    // vector<readinfo> v;
-    // vector<readinfo> ans;
-    // int qnum = 0, dnum = 0, pdnum = 0;
-    // int destnum = 0;
+    int prevs = -1;
+    vector<readinfo> v;
+    vector<readinfo> ans;
+    int qnum = 0, dnum = 0, pdnum = 0;
+    int destnum = 0;
 
-    // while(1)
-    // {
+    while(1)
+    {
 
-    //     if(!getline(query, line))
-    //         break;
+        if(!getline(query, line))
+            break;
         
-    //     stringstream lines(line);
+        stringstream lines(line);
 
-    //     string ids, ss, ts, l, r;
-    //     int id, s, t;
-    //     getline(lines, ids, '\t');
-    //     getline(lines, ss, '\t');
-    //     getline(lines, ts, '\t');
-    //     getline(lines, l, '\t');
-    //     getline(lines, r, '\t');
-    //     qnum++;
+        string ids, ss, ts, l, r;
+        int id, s, t;
+        getline(lines, ids, '\t');
+        getline(lines, ss, '\t');
+        getline(lines, ts, '\t');
+        getline(lines, l, '\t');
+        getline(lines, r, '\t');
+        qnum++;
 
-    //     id = stoi(ids);
-    //     s = stoi(ss);
-    //     t = stoi(ts);
+        id = stoi(ids);
+        s = stoi(ss);
+        t = stoi(ts);
 
-    //     s = (hmap[s>>1] << 1) + (s & 1);
-    //     t = (hmap[t>>1] << 1) + (t & 1);
+        s = (hmap[s>>1] << 1) + (s & 1);
+        t = (hmap[t>>1] << 1) + (t & 1);
 
-    //     readinfo tmp;
-    //     tmp.s = s;
-    //     tmp.t = t;
-    //     tmp.id = id;
-    //     tmp.l = l;
-    //     tmp.r = r;
-    //     prevs = s;
+        readinfo tmp;
+        tmp.s = s;
+        tmp.t = t;
+        tmp.id = id;
+        tmp.l = l;
+        tmp.r = r;
+        prevs = s;
   
-    //     all[s].push_back(tmp);
-    // }
+        all[s].push_back(tmp);
+    }
 
 
-    // int undo = 0;
+    int undo = 0;
 
-    // for(int i = 0; i < (n<<1); i++)
-    //     for(int j = h[i]; j ; j = q[j].next)
-    //         in[q[j].to]++;
+    for(int i = 0; i < (n<<1); i++)
+        for(int j = h[i]; j ; j = q[j].next)
+            in[q[j].to]++;
 
-    // for(int i = 0; i < (n<<1); i++)
-    // {
-    //     if(in[i] == 0)
-    //         s_queue.push(i);
-    //     if(all[i].size() > 0)
-    //         undo++;
-    // }
+    for(int i = 0; i < (n<<1); i++)
+    {
+        if(in[i] == 0)
+            s_queue.push(i);
+        if(all[i].size() > 0)
+            undo++;
+    }
 
-    // qnum = 0;
-    // int pathnum = 0;
-    // clock_t start,end;
-    // start = clock();
-    // int c;
-    // int last = 0;
-    // printf("Query Nodes = %d\n", undo);
-    // while(undo)
-    // {
-    //     int s = -1;
-    //     if(!s_queue.empty())
-    //     {
-    //         s = s_queue.front();
-    //         s_queue.pop();
-    //         while(!s_queue.empty() && finish[s])
-    //         {
-    //             s = s_queue.front();
-    //             s_queue.pop();
-    //         }
-    //     }
+    qnum = 0;
+    int pathnum = 0;
+    clock_t start,end;
+    start = clock();
+    int c;
+    int last = 0;
+    printf("Query Nodes = %d\n", undo);
+    while(undo)
+    {
+        int s = -1;
+        if(!s_queue.empty())
+        {
+            s = s_queue.front();
+            s_queue.pop();
+            while(!s_queue.empty() && finish[s])
+            {
+                s = s_queue.front();
+                s_queue.pop();
+            }
+        }
 
-    //     if(s_queue.empty() && (s == -1 || finish[s]))
-    //         for(int i = last; i < (n<<1); i++)
-    //             if(!finish[i] && all[i].size())
-    //             {
-    //                 s = i;
-    //                 last = i + 1;
-    //                 break;
-    //             }
+        if(s_queue.empty() && (s == -1 || finish[s]))
+            for(int i = last; i < (n<<1); i++)
+                if(!finish[i] && all[i].size())
+                {
+                    s = i;
+                    last = i + 1;
+                    break;
+                }
 
-    //     if(s == -1)
-    //         break;
+        if(s == -1)
+            break;
 
-    //     if(all[s].size() == 0)
-    //     {
-    //         Release(s);
-    //         continue;
-    //     }
+        if(all[s].size() == 0)
+        {
+            Release(s);
+            continue;
+        }
 
-    //     v = Djikstra(s, all[s]);
+        v = Djikstra(s, all[s]);
 
-    //     qnum += all[s].size();
-    //     undo--;
-    //     dnum++;
+        qnum += all[s].size();
+        undo--;
+        dnum++;
 
-    //     for(int i = 0; i < v.size(); i++)
-    //         if(v[i].found == 1)
-    //             ans.push_back(v[i]);
+        for(int i = 0; i < v.size(); i++)
+            if(v[i].found == 1)
+                ans.push_back(v[i]);
 
-    //     Release(s);
+        Release(s);
 
-    //     while(h[s])
-    //     {
-    //         int nexts = Find_next(s);
+        while(h[s])
+        {
+            int nexts = Find_next(s);
 
-    //         if(nexts == -1 || finish[nexts])
-    //             break;
+            if(nexts == -1 || finish[nexts])
+                break;
 
            
-    //         v = PartlyDjikstra(nexts, s, all[nexts]);
-    //         // Djikstra2(nexts, all[nexts], v.size());
+            v = PartlyDjikstra(nexts, s, all[nexts]);
+            // Djikstra2(nexts, all[nexts], v.size());
 
-    //         // for(int i = 0; i < (n<<1); i++)
-    //         //     if((vst2[i] == nexts && nexts != vst[i])|| (vst[i] == nexts && nexts != vst2[i]) || (vst[i] == vst2[i] && vst[i] == nexts && dst[i] != dst2[i]))
-    //         //     {
-    //         //         printf("%d %d %d %d %d %d \n", nexts, i, dst[i], dst2[i], vst[i], vst2[i]);
-    //         //     }
+            // for(int i = 0; i < (n<<1); i++)
+            //     if((vst2[i] == nexts && nexts != vst[i])|| (vst[i] == nexts && nexts != vst2[i]) || (vst[i] == vst2[i] && vst[i] == nexts && dst[i] != dst2[i]))
+            //     {
+            //         printf("%d %d %d %d %d %d \n", nexts, i, dst[i], dst2[i], vst[i], vst2[i]);
+            //     }
 
-    //         // if(nexts == 78)
-    //         //         cin>>c;
+            // if(nexts == 78)
+            //         cin>>c;
 
-    //         qnum += all[nexts].size();
-    //         if(all[nexts].size() > 0)
-    //             undo--;
-    //         pdnum++;
+            qnum += all[nexts].size();
+            if(all[nexts].size() > 0)
+                undo--;
+            pdnum++;
 
-    //         for(int i = 0; i < v.size(); i++)
-    //             if(v[i].found == 1)
-    //                 ans.push_back(v[i]);
+            for(int i = 0; i < v.size(); i++)
+                if(v[i].found == 1)
+                    ans.push_back(v[i]);
        
 
-    //         s = nexts;
-    //         Release(s);
-    //     }
+            s = nexts;
+            Release(s);
+        }
 
-    //     pathnum++;
-    //     if(pathnum % 10000 == 0)
-    //         printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d Undo: %d\n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum, undo);
-    // }
+        pathnum++;
+        if(pathnum % 10000 == 0)
+            printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d Undo: %d\n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum, undo);
+    }
     
 
-    // printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d \n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum);
-    // printf("Unfinshed %d\n", undo);
-    // end = clock();
-    // printf("Running time: %.2lf\n", (double)(end-start)/CLOCKS_PER_SEC/60);
+    printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d \n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum);
+    printf("Unfinshed %d\n", undo);
+    end = clock();
+    printf("Running time: %.2lf\n", (double)(end-start)/CLOCKS_PER_SEC/60);
 
 
-    // ofstream outq(argv[3]);
-    // for(int i = 0; i < ans.size(); i++)
-    //     outq<<ans[i].id<<"\t"<<ans[i].path<<"\n";
-    // outq.close();
+    ofstream outq(argv[3]);
+    for(int i = 0; i < ans.size(); i++)
+        outq<<ans[i].id<<"\t"<<ans[i].path<<"\n";
+    outq.close();
 
     return 0;
 }

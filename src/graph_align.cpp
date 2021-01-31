@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <queue>
 #include <unordered_set>
-#include "include/bifrost/CompactedDBG.hpp"
-#include "include/bifrost/ColoredCDBG.hpp"
+#include "bifrost/CompactedDBG.hpp"
+#include "bifrost/ColoredCDBG.hpp"
 
 using namespace std;
 const int INF = 0x7fffffff/2;
@@ -760,7 +760,7 @@ string upper(string s)
     return ret;
 }
 
-int threshold = 20;
+int threshold = 1;
 int main(int argc, char **argv)
 {
 
