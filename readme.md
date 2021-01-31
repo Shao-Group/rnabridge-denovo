@@ -46,10 +46,7 @@ make
 The usage of `rnabridge-denova` is:
 
 ```
-Bifrost build -t 4 -k 31 -c -i -d -s pathtoread1.fq -s pathtoread2.fq -o ./dbg
-./src/graph_align update -t 4 -g ./dbg.gfa -f ./dbg.bfg_colors -q ./graph -x ./query
-./src/find_bridge ./graph ./query ./bridge
-./src/bridge2fa ./bridge ./bridge.fa
+./rnabridge-denova pathtoread1.fq pathtoread2.fq pathtooutputbridge.fa
 ```
 
-pathtoread1.fq and pathtoread2.fq are your input paired-end RNA-seq reads. The output is bridge.fa.
+pathtoread1.fq and pathtoread2.fq are your input paired-end RNA-seq reads. pathtooutputbridge.fa is the path for the output file, which contains all the brdiges in fasta format.

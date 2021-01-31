@@ -1,0 +1,4 @@
+Bifrost build -t 4 -k 31 -c -i -d -s $1 -s $2 -o ./dbg
+./src/graph_align update -t 4 -g ./dbg.gfa -f ./dbg.bfg_colors -q ./graph -x ./query
+./src/find_bridge ./graph ./query ./bridge
+./src/bridge2fa ./bridge $3
