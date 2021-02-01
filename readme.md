@@ -14,15 +14,15 @@ If you add add the option `-DCMAKE_INSTALL_PREFIX=/pathtobifrost` in to the `cma
 
 ```
 export C_INCLUDE_PATH=$C_INCLUDE_PATH:/pathtobifrost/include/
-export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/pathtobifrostinclude/
+export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/pathtobifrost/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/pathtobifrost/lib/
 export LIBRARY_PATH=$LIBRARY_PATH:/pathtobifrost/lib/
 export PATH=$PATH:/pathtobifrost/lib/:/pathtobifrost/bin/
 ```
 
-## Compile rnabridge-align
+## Compile rnabridge-denova
 
-Use the following to compile rnabridge-align:
+Use the following to compile rnabridge-denova:
 ```
 cd src
 make
