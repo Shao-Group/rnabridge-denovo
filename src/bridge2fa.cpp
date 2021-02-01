@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
 
         getline(liness, id, '\t');
         getline(liness, bridge, '\t');
+
+	if(bridge.length() <= 76)
+		continue;
         cnt++;
         id = '>' + id;
         fprintf(readout, "%s\n%s\n", id.c_str(), bridge.c_str());

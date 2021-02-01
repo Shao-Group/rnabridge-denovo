@@ -9,20 +9,20 @@ See [rnabridge-test](https://github.com/Shao-Group/rnabridge-test) for the evalu
 ## Install Bifrost
 rnabridge-denova uses additional library Bifrost for de Bruijn graph construction, the instrcution for downloading and installing Bifrost is here(https://github.com/pmelsted/bifrost).
 
-If you add add the option `-DCMAKE_INSTALL_PREFIX=/pathtobifrost` in to the `cmake` command in building Bifrost, the install path for Bifrost will not be the default path. Remember to set the environment variables C_INCLUDE_PATH, CPLUS_INCLUDE_PATH, LD_LIBRARY_PATH, LIBRARY_PATH and PATH correctly.
+If you add the option `-DCMAKE_INSTALL_PREFIX=/pathtobifrost` to the `cmake` command in building Bifrost, the install path for Bifrost will not be the default path. Remember to set the environment variables C_INCLUDE_PATH, CPLUS_INCLUDE_PATH, LD_LIBRARY_PATH, LIBRARY_PATH and PATH correctly.
 
 
 ```
 export C_INCLUDE_PATH=$C_INCLUDE_PATH:/pathtobifrost/include/
-export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/pathtobifrost/include/
+export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/pathtobifrostinclude/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/pathtobifrost/lib/
 export LIBRARY_PATH=$LIBRARY_PATH:/pathtobifrost/lib/
 export PATH=$PATH:/pathtobifrost/lib/:/pathtobifrost/bin/
 ```
 
-## Compile rnabridge-denova
+## Compile rnabridge-align
 
-Use the following to compile rnabridge-denova:
+Use the following to compile rnabridge-align:
 ```
 cd src
 make
