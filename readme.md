@@ -1,8 +1,10 @@
 
 # Overview
 rnabridge-denova implements an efficient algorithm to bridge paired-end RNA-seq reads, i.e.,
-to find the entire fragments for the given paired-end reads.
-See [rnabridge-test](https://github.com/Shao-Group/rnabridge-test) for the evaluation of this tool.
+to find the sequences of full fragments given the sequences of paired-end reads.
+Its sister tool, [rnabridge-align](https://github.com/Shao-Group/rnabridge-align), 
+determines the alignments of full fragments given the alignments of paired-end reads.
+See [rnabridge-test](https://github.com/Shao-Group/rnabridge-test) for the evaluation of both tools.
 
 # Installation
 
