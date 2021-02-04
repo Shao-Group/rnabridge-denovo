@@ -1,95 +1,19 @@
-#include <iostream>
-#include <stack>
-#include <algorithm>
-#include <queue>
-#include <map>
-#include <set>
-#include <fstream>
-#include <cstring>
-#include <cstdio>
-#include <unordered_set>
-#include <sstream>
-#include <ctime>
-#include <time.h>
+#include "bridging.h"
 
-using namespace std;
-const int INF = 0x7fffffff/2;
-const int maxN = 20000000;
-const int maxn = 6000000;
-const int maxlen = 400;
-const int kbottle = 5;
+int reverseVertex(int x)
+{
+    if(x & 1)
+        return x - 1;
+    return x + 1;
+}
 
-int n, m;
-vector<string> unis;
-vector<int> value;
-vector<int> unilen;
-
-int h[maxn<<1] = {0}, edgecnt = 0;
-struct edgelist{int to, next;}
-q[maxn<<2];
-int vst[maxn<<1], prevex[maxn<<1];
-int dst[maxn<<1][kbottle];
-int inpq[maxn<<1];
-
-void Add(int x, int y)
+void bridging::add(int x, int y)
 {
     q[++edgecnt] = (edgelist){y, h[x]};
     h[x] = edgecnt;
 }
 
-class nodeDistance{
-
-public:
-    int id;
-    int pre;
-    int dis[kbottle];
-    int seq_len;
-    int length;
-    
-
-    nodeDistance(int i, int p, int d[], int l, int sl)
-    {
-        id = i;
-        pre = p;
-        length = l;
-        seq_len = sl;
-        for(int i = 0; i < kbottle; i++)
-            dis[i] = d[i];
-
-    }
-
-    bool operator < (const struct nodeDistance &n1) const
-    {
-        for(int i = 0; i < kbottle; i++)
-            if(dis[i] != n1.dis[i])
-                return dis[i] < n1.dis[i];
-        return 1;
-    }
-};
-
-struct readinfo{int s, t, id; bool found = 0; string l,r,path;};
-int vnodes = 0;
-vector<int> leaves;
-
-string trans(string a)
-{
-    string b = "";
-    for(int i = a.length() - 1; i >= 0; i--)
-    {
-        if(a[i] == 'A')
-            b = b + 'T';
-        if(a[i] == 'G')
-            b = b + 'C';
-        if(a[i] == 'C')
-            b = b + 'G';
-        if(a[i] == 'T')
-            b = b + 'A';
-    }
-
-    return b;
-}
-
-string path2string(int s, int t, int k, string l, string r)
+string bridging::path2String(int s, int t, int k, string l, string r)
 {
     int x = t;
     string tmp;
@@ -140,25 +64,6 @@ string path2string(int s, int t, int k, string l, string r)
     }
 
 
-    // if(prevex[t] == s)
-    // {
-    //     int y = prevex[x];
-    //     tmp = unis[x>>1];
-    //     string tmpy = unis[y>>1];
-    //     if(x&1)
-    //         tmp = trans(tmp);
-    //     if(y&1)
-    //         tmpy = trans(tmpy);
-    //     int ls = tmpy.find(lt) + k;
-    //     int rs = tmp.find(rt);
-
-    //     string ll = l + tmpy.substr(ls);
-    //     string rr = tmp.substr(0, rs) + r;
-
-    //     return ll + rr.substr(k-1);
-
-    // }
-
 
     tmp = unis[x>>1];
     if(x&1)
@@ -172,12 +77,8 @@ string path2string(int s, int t, int k, string l, string r)
         tmp = unis[x>>1];
         if(x&1)
             tmp = trans(tmp);
-        // if(s == 421051 && t == 420668)
-        //     cout<<x<<" "<<prevex[x]<<endl;
-        //if(s == 277394 && t== 277322)
-            //cout<<x<<" "<<prevex[x]<<endl;
+
         ret = tmp.substr(0, tmp.length() - k + 1) + ret;
-        //ret = tmp + ret;
         x = prevex[x];
     }
 
@@ -191,7 +92,7 @@ string path2string(int s, int t, int k, string l, string r)
     return ret;
 }
 
-vector<readinfo> Djikstra(int start, vector<readinfo> v)
+vector<readinfo> bridging::dijkstra(int start, vector<readinfo> v)
 {
     vector<readinfo> ret;
     if(v.size() == 0)
@@ -216,7 +117,7 @@ vector<readinfo> Djikstra(int start, vector<readinfo> v)
 
     nodeDistance n(-1, -1, sdis, 0, 0);
 
-    int x, num = 0;
+    int x;
 
     while(pq.size() > 0)
     {
@@ -240,9 +141,6 @@ vector<readinfo> Djikstra(int start, vector<readinfo> v)
         vst[x] = start;
         prevex[x] = n.pre;
         memcpy(dst[x], n.dis, sizeof(n.dis));
-        num++;
-        vnodes++;
-
 
         if(n.seq_len > maxlen)
         {
@@ -285,7 +183,7 @@ vector<readinfo> Djikstra(int start, vector<readinfo> v)
         if(vst[v[i].t] == start)
         {
             v[i].found = true;
-            v[i].path = path2string(v[i].s, v[i].t, 31, v[i].l, v[i].r);
+            v[i].path = path2String(v[i].s, v[i].t, 31, v[i].l, v[i].r);
 
             if(v[i].path != "-1")
                 ret.push_back(v[i]);
@@ -294,11 +192,7 @@ vector<readinfo> Djikstra(int start, vector<readinfo> v)
     return ret;
 }
 
-struct dfs_stuck{int u,ch,length,seq_len;}sp[10000001];
-
-int dvst[maxn<<1] = {0};
-
-vector<readinfo> PartlyDjikstra(int start, int pres, vector<readinfo> v)
+vector<readinfo> bridging::partlyDijkstra(int start, int pres, vector<readinfo> v)
 {
     int tp = 1;
     priority_queue<nodeDistance> pq;
@@ -320,8 +214,7 @@ vector<readinfo> PartlyDjikstra(int start, int pres, vector<readinfo> v)
         u = cur.u;
         vst[u] = start;
 
-        //if(cur.ch == h[u] && start == 78)
-            //printf("UP %d %d %d %d %d\n", u, dst[u], prevex[u], value[u], cur.length);
+
         if(cur.ch == 0)
         {
             tp--;
@@ -420,8 +313,6 @@ vector<readinfo> PartlyDjikstra(int start, int pres, vector<readinfo> v)
             break;
 
 
-        //if(start == 78)
-            //printf("Dij %d %d %d %d %d\n",x, n.dis, n.pre, value[x], n.length);
         vst[x] = start;
         prevex[x] = n.pre;
         memcpy(dst[x], n.dis, sizeof(n.dis));
@@ -480,25 +371,15 @@ vector<readinfo> PartlyDjikstra(int start, int pres, vector<readinfo> v)
         if(vst[v[i].t] == start)
         {
             v[i].found = true;
-            v[i].path = path2string(v[i].s, v[i].t, 31, v[i].l, v[i].r);
+            v[i].path = path2String(v[i].s, v[i].t, 31, v[i].l, v[i].r);
             if(v[i].path != "-1")
                 ret.push_back(v[i]);
         }
     return ret;
 }
 
-int ReverseVertex(int x)
-{
-    if(x & 1)
-        return x - 1;
-    return x + 1;
-}
 
-vector<readinfo> all[maxn<<1];
-int in[maxn<<1] = {0}, finish[maxn<<1] = {0};
-queue<int> s_queue;
-
-void Release(int x)
+void bridging::release(int x)
 {
     finish[x] = 1;
     for(int i = h[x]; i; i = q[i].next)
@@ -510,7 +391,7 @@ void Release(int x)
         }
 }
 
-int Find_next(int s)
+int bridging::findNext(int s)
 {
     queue<int> bfs_queue;
 
@@ -530,7 +411,7 @@ int Find_next(int s)
 
         if(all[x].size() > 0)
             return x;
-        Release(x);
+        release(x);
 
         for(int i = h[x]; i; i = q[i].next)
         {  
@@ -544,11 +425,9 @@ int Find_next(int s)
     return -1;
 }
 
-int main(int argc, char *argv[])
+void bridging::read(string graphinput, string queryinput)
 {
-    srand(time(NULL));
-
-    ifstream input(argv[1]);
+    ifstream input(graphinput.c_str());
     string line;
 
     getline(input, line);
@@ -559,6 +438,7 @@ int main(int argc, char *argv[])
     n = stoi(tmp);
     getline(fline, tmp, '\t');
     m = stoi(tmp);
+
     int *hmap;
     hmap = new int[maxN];
     memset(hmap, 0, sizeof(hmap));
@@ -596,25 +476,19 @@ int main(int argc, char *argv[])
 
         x = (hmap[x>>1] << 1) + (x & 1);
         y = (hmap[y>>1] << 1) + (y & 1);
-        Add(x,y);
+        add(x,y);
     }
     
     int tmpcnt = 0;
     printf("Graph Build Finish Vertex = %d, Edge = %d\n", n<<1, edgecnt);
     
-    ifstream query(argv[2]);
+    ifstream query(queryinput.c_str());
 
     for(int i = 0; i < (n<<1); i++)
     {
         vst[i] = -1;
         inpq[i] = -1;
     }
-
-    int prevs = -1;
-    vector<readinfo> v;
-    vector<readinfo> ans;
-    int qnum = 0, dnum = 0, pdnum = 0;
-    int destnum = 0;
 
     while(1)
     {
@@ -631,7 +505,6 @@ int main(int argc, char *argv[])
         getline(lines, ts, '\t');
         getline(lines, l, '\t');
         getline(lines, r, '\t');
-        qnum++;
 
         id = stoi(ids);
         s = stoi(ss);
@@ -646,13 +519,11 @@ int main(int argc, char *argv[])
         tmp.id = id;
         tmp.l = l;
         tmp.r = r;
-        prevs = s;
   
         all[s].push_back(tmp);
     }
 
 
-    int undo = 0;
 
     for(int i = 0; i < (n<<1); i++)
         for(int j = h[i]; j ; j = q[j].next)
@@ -665,14 +536,16 @@ int main(int argc, char *argv[])
         if(all[i].size() > 0)
             undo++;
     }
-
-    qnum = 0;
-    int pathnum = 0;
-    clock_t start,end;
-    start = clock();
-    int c;
-    int last = 0;
     printf("Query Nodes = %d\n", undo);
+}
+
+void bridging::findPaths()
+{
+    int qnum = 0, dnum = 0, pdnum = 0, pathnum = 0;
+    int last = 0;
+
+    vector<readinfo> v;
+
     while(undo)
     {
         int s = -1;
@@ -701,11 +574,11 @@ int main(int argc, char *argv[])
 
         if(all[s].size() == 0)
         {
-            Release(s);
+            release(s);
             continue;
         }
 
-        v = Djikstra(s, all[s]);
+        v = dijkstra(s, all[s]);
 
         qnum += all[s].size();
         undo--;
@@ -715,27 +588,17 @@ int main(int argc, char *argv[])
             if(v[i].found == 1)
                 ans.push_back(v[i]);
 
-        Release(s);
+        release(s);
 
         while(h[s])
         {
-            int nexts = Find_next(s);
+            int nexts = findNext(s);
 
             if(nexts == -1 || finish[nexts])
                 break;
 
            
-            v = PartlyDjikstra(nexts, s, all[nexts]);
-            // Djikstra2(nexts, all[nexts], v.size());
-
-            // for(int i = 0; i < (n<<1); i++)
-            //     if((vst2[i] == nexts && nexts != vst[i])|| (vst[i] == nexts && nexts != vst2[i]) || (vst[i] == vst2[i] && vst[i] == nexts && dst[i] != dst2[i]))
-            //     {
-            //         printf("%d %d %d %d %d %d \n", nexts, i, dst[i], dst2[i], vst[i], vst2[i]);
-            //     }
-
-            // if(nexts == 78)
-            //         cin>>c;
+            v = partlyDijkstra(nexts, s, all[nexts]);
 
             qnum += all[nexts].size();
             if(all[nexts].size() > 0)
@@ -748,25 +611,21 @@ int main(int argc, char *argv[])
        
 
             s = nexts;
-            Release(s);
+            release(s);
         }
 
         pathnum++;
         if(pathnum % 10000 == 0)
-            printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d Undo: %d\n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum, undo);
+            printf("Query: %d Ans: %d radio: %.3lf Dij times: %d partlyDij times: %d Undo: %d\n", qnum, int(ans.size()), ans.size()/float(qnum), dnum, pdnum, undo);
     }
-    
 
-    printf("Query: %d Ans: %d radio: %.3lf Nodes: %d Dij times: %d partlyDij times: %d \n", qnum, ans.size(), ans.size()/float(qnum), vnodes, dnum, pdnum);
-    printf("Unfinshed %d\n", undo);
-    end = clock();
-    printf("Running time: %.2lf\n", (double)(end-start)/CLOCKS_PER_SEC/60);
+    printf("Query: %d Ans: %d radio: %.3lf Dij times: %d partlyDij times: %d \n", qnum, int(ans.size()), ans.size()/float(qnum), dnum, pdnum);
+}
 
+void bridging::write(string path)
+{    
+    FILE * readout = fopen (path.c_str(), "w");
 
-    ofstream outq(argv[3]);
     for(int i = 0; i < ans.size(); i++)
-        outq<<ans[i].id<<"\t"<<ans[i].path<<"\n";
-    outq.close();
-
-    return 0;
+        fprintf(readout, ">%d\n%s\n", ans[i].id, ans[i].path.c_str());
 }

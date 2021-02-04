@@ -1,13 +1,22 @@
 CXXFLAGS = -O3 -std=c++11 -mcmodel=medium
 CC = g++
 
-all: find_bridge graph_align bridge2fa
+all: rnabridge-denova clean
 
-find_bridge: find_bridge.cpp
-	$(CC) $(CXXFLAGS) -o find_bridge find_bridge.cpp
+utils.o: utils.cpp
+	$(CC) $(CXXFLAGS) -c utils.cpp
 
-bridge2fa: bridge2fa.cpp
-	$(CC) $(CXXFLAGS) -o bridge2fa bridge2fa.cpp
+graph.o: graph.cpp 
+	$(CC) $(CXXFLAGS) -march=native -Wextra -c graph.cpp -lbifrost -pthread -lz
 
-graph_align: graph_align.cpp
-	$(CC) $(CXXFLAGS) -march=native -Wextra -o graph_align graph_align.cpp -lbifrost -pthread -lz 
+bridging.o: bridging.cpp
+	$(CC) $(CXXFLAGS) -c bridging.cpp
+
+rnabridge-denova: graph.o bridging.o utils.o main.cpp
+	$(CC) $(CXXFLAGS) -march=native -Wextra -o rnabridge-denova main.cpp graph.o bridging.o utils.o -lbifrost -pthread -lz
+	
+.PHONY:clean
+
+
+clean:
+	rm *.o
