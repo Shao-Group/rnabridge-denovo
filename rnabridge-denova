@@ -1,7 +1,0 @@
-shellpath=`dirname $0`
-mkdir tmpfiles
-Bifrost build -t 4 -k 31 -c -i -d -s $1 -s $2 -o ./tmpfiles/dbg
-$shellpath/src/graph_align update -t 4 -g ./tmpfiles/dbg.gfa -f ./tmpfiles/dbg.bfg_colors -q ./tmpfiles/graph -x ./tmpfiles/query
-$shellpath/src/find_bridge ./tmpfiles/graph ./tmpfiles/query ./tmpfiles/bridge
-$shellpath/src/bridge2fa ./tmpfiles/bridge $3
-rm -r tmpfiles
