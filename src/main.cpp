@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	mygraph.build(rd1, rd2, tmp);
 	findbridge.read(tmp + "/graph", tmp + "query");
 	findbridge.findPaths();
-	findbridge.write(output + "/bridge.fa");
+	findbridge.write(output);
 
 	rmdir(tmp.c_str());
 	return 0;

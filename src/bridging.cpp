@@ -627,5 +627,6 @@ void bridging::write(string path)
     FILE * readout = fopen (path.c_str(), "w");
 
     for(int i = 0; i < ans.size(); i++)
+        if(ans[i].path.length() >= 76)
         fprintf(readout, ">%d\n%s\n", ans[i].id, ans[i].path.c_str());
 }
