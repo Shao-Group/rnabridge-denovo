@@ -42,7 +42,7 @@ class graph{
     const int INF = 0x7fffffff/2;
     static const int maxN = 20000000;
     int kmer = 31;
-    int threshold = 1;
+    int threshold = 20;
     int global_id = 0;
 
     vector<string> dict;
