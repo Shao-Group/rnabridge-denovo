@@ -19,6 +19,13 @@ void read(char **argv)
 	output = argv[3];
 }
 
+void print_help()
+{
+	printf("\n");
+	printf("Usage: rnabridge-denovo <input-read1> <input-read2> <output-bridge-sequence>\n");
+	printf("\n");
+}
+
 graph mygraph;
 bridging findbridge;
 
@@ -27,6 +34,7 @@ int main(int argc, char **argv)
 	if(argc < 4)
 	{
 		printf("Parameters Error\n");
+		print_help();
 		return 0;
 	}
 	tmp = "./tmpfiles/";
