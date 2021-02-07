@@ -19,7 +19,7 @@ export C_INCLUDE_PATH=$C_INCLUDE_PATH:/pathtobifrost/include/
 export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/pathtobifrostinclude/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/pathtobifrost/lib/
 export LIBRARY_PATH=$LIBRARY_PATH:/pathtobifrost/lib/
-export PATH=$PATH:/pathtobifrost/lib/:/pathtobifrost/bin/
+export PATH=$PATH:/pathtobifrost/lib/
 ```
 
 ## Compile rnabridge-align
