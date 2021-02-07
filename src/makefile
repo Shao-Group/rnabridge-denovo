@@ -13,7 +13,7 @@ bridging.o: bridging.cpp
 	$(CXX) $(CXXFLAGS) -c bridging.cpp
 
 rnabridge-denovo: graph.o bridging.o utils.o main.cpp
-	$(CXX) $(CXXFLAGS) -march=native -Wextra -o rnabridge-denovo main.cpp graph.o bridging.o utils.o $(LIBS)
+	$(CXX) $(CXXFLAGS) -march=native -Wextra -o rnabridge-denovo main.cpp graph.o bridging.o utils.o $(LIBS) ${LDFLAGS}
 	
 .PHONY:clean
 
