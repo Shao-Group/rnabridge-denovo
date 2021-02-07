@@ -52,8 +52,8 @@ struct readinfo{int s, t, id; bool found = 0; string l,r,path;};
 class bridging{
 
     const int INF = 0x7fffffff/2;
-    const static int maxN = 20000000;
-    const static int maxn = 10000000;
+    const static int maxN = 5000000;
+    const static int maxn = 5000000;
     const int maxlen = 400;
 
     int n, m;
@@ -68,7 +68,7 @@ class bridging{
     int dst[maxn<<1][kbottle];
     int inpq[maxn<<1];
 
-    struct dfs_stuck{int u,ch,length,seq_len;}sp[10000001];
+    struct dfs_stuck{int u,ch,length,seq_len;}sp[maxn<<1];
     int dvst[maxn<<1] = {0};
 
     vector<int> leaves;

@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 	tmp = "./tmpfiles/";
 	mkdir(tmp.c_str(), 0755);
 
+
 	read(argv);
 	mygraph.build(rd1, rd2, tmp);
 	findbridge.read(tmp + "/graph", tmp + "query");

@@ -40,7 +40,7 @@ class myUnitigData : public CCDBG_Data_t<myUnitigData>, CDBG_Data_t<myUnitigData
 class graph{
 
     const int INF = 0x7fffffff/2;
-    static const int maxN = 20000000;
+    static const int maxN = 5000000;
     int kmer = 31;
     int threshold = 20;
     int global_id = 0;
