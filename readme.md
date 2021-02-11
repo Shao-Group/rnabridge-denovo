@@ -1,3 +1,5 @@
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/rnabridge-denovo/badges/installer/conda.svg)](https://anaconda.org/bioconda/rnabridge-denovo)
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/rnabridge-denovo/badges/downloads.svg)](https://anaconda.org/bioconda/rnabridge-denovo)
 
 # Overview
 rnabridge-denovo implements an efficient algorithm to bridge paired-end RNA-seq reads, i.e.,
