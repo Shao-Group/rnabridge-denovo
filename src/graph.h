@@ -40,7 +40,7 @@ class myUnitigData : public CCDBG_Data_t<myUnitigData>, CDBG_Data_t<myUnitigData
 class graph{
 
     const int INF = 0x7fffffff/2;
-    static const int maxN = 5000000;
+    static const int maxN = 30000000;
     int kmer = 31;
     int threshold = 20;
     int global_id = 0;
@@ -62,18 +62,22 @@ class graph{
 
 
     
-    CCDBG_Build_opt opt, opt1;
-
-    ColoredCDBG<> dbg;
-    ColoredCDBG<myUnitigData> cdbg;
-
-    void init(string read, ColoredCDBG<myUnitigData>& ccdbg);
-    void get_Eclass(string l, string r, int id, ColoredCDBG<myUnitigData>& ccdbg);
+    CDBG_Build_opt opt, opt1;
+    int edges = 0;
+    CompactedDBG<> dbg;
+    CompactedDBG<myUnitigData> cdbg;
+    void init(string read, CompactedDBG<myUnitigData>& ccdbg);
+    void get_Eclass(string l, string r, int id, CompactedDBG<myUnitigData>& ccdbg);
     void add(int a, int b);
-    void dfs_Iterative(const UnitigColorMap<myUnitigData>& ucm);
+    void dfs_Iterative(const UnitigMap<myUnitigData>& ucm);
     void dfs();
 public:
     void build(string rd1, string rd2, string output);
+    graph(int t)
+    {
+        threshold = t;
+    }
+    
 
 };
 

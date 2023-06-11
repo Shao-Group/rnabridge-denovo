@@ -15,7 +15,7 @@ using namespace std;
 
 #ifndef __BRIDGING_H__
 #define __BRIDGING_H__
-const int kbottle = 5;
+const int kbottle = 1;
 
 class nodeDistance{
 
@@ -52,8 +52,8 @@ struct readinfo{int s, t, id; bool found = 0; string l,r,path;};
 class bridging{
 
     const int INF = 0x7fffffff/2;
-    const static int maxN = 5000000;
-    const static int maxn = 5000000;
+    const static int maxN = 30000000;
+    const static int maxn = 30000000;
     const int maxlen = 400;
 
     int n, m;

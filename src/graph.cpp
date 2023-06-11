@@ -3,59 +3,51 @@
 
 bool check_Direction(string a, string b)
 {
-    string a0 = a.substr(a.length() - 30, 30);
-    string b0 = b.substr(0, 30);
+    int len = a.length();
 
-    return a0 == b0;
+    for(int i = 0; i < 30; i++)
+        if(b[i] != a[len-30+i])
+            return 0;
+
+    return 1;
 }
 
 
-string upper(string s)
+void upper(string &s)
 {
     int len = s.length();
-    string ret;
     for(int i = 0; i < len; i++)
         if(s[i] >= 'a' && s[i] <= 't')
-            ret += s[i] - 'a' + 'A';
-        else if(s[i] >= 'A' && s[i] <= 'T')
-            ret += s[i];
-
-    return ret;
+            s[i] += 'A' - 'a';
 }
 
 void graph::build(string rd1, string rd2, string output)
 {
-    printf("Build de Bruijn Graph\n");
-    opt.clipTips = true;
-    opt.deleteIsolated = true;
-    opt.filename_seq_in.push_back(rd1);
-    opt.filename_seq_in.push_back(rd2);
-    opt.nb_threads = 4;
-    opt.outputColors = true;
-    opt.build = true;
-    opt.outputColors = true;
-    opt.prefixFilenameOut = output + "/dbg";
+    printf("Read de Bruijn Graph\n");
+    // opt.clipTips = false;
+    // opt.deleteIsolated = false;
+    // opt.filename_seq_in.push_back(rd1);
+    // opt.filename_seq_in.push_back(rd2);
+    // opt.nb_threads = 15;
+    // opt.build = true;
+    // opt.prefixFilenameOut = output + "/dbg";
 
-    if(!dbg.buildGraph(opt))
-        printf("Build de Bruijn Graph Failed with Bifrost\n");
-    dbg.simplify();
-    dbg.buildColors(opt);
-
-    if(!dbg.write(opt.prefixFilenameOut, 4))
-        printf("Fail to write graph to %s\n", opt.prefixFilenameOut.c_str());
+    // if(!dbg.build(opt))
+    //     printf("Build de Bruijn Graph Failed with Bifrost\n");
+    
+    // if(!dbg.write(opt.prefixFilenameOut, 15))
+    //     printf("Fail to write graph to %s\n", opt.prefixFilenameOut.c_str());
 
 
-
-    opt1.nb_threads = 4;
+    opt1.nb_threads = 15;
     opt1.update = true;
-    opt1.outputColors = true;
     opt1.filename_graph_in = output + "/dbg.gfa";
-    opt1.filename_colors_in = output + "/dbg.bfg_colors";
-    cdbg.read(opt1.filename_graph_in, opt1.filename_colors_in, opt1.nb_threads, opt1.verbose);
+    cdbg.read(opt1.filename_graph_in, opt1.nb_threads, opt1.verbose);
 
     printf("Origin graph size: %d\n", int(cdbg.size()));
     dfs();
-
+    cout<<edges<<endl;
+    
     string line, line1;
     int readsnb = 0;
     ifstream infile(rd1.c_str());
@@ -77,8 +69,8 @@ void graph::build(string rd1, string rd2, string output)
 
         readsnb++;
         //cout<<readsnb<<" "<<line<<" "<<line1<<endl;
-        line = upper(line);
-        line1 = upper(line1);
+        upper(line);
+        upper(line1);
         
         init(line, cdbg);
         init(line1, cdbg);
@@ -111,11 +103,14 @@ void graph::build(string rd1, string rd2, string output)
         if(val[i<<1] >= threshold)
             vnumber++;
 
+    printf("Vertices: %d\n", vnumber);
     for(int i = 2; i <= global_id * 2 + 1; i++)
-        if(val[i] > threshold)
+        if(val[i] >= threshold)
             for(int j = h[i]; j; j = q[j].next)
                 if(val[q[j].to] >= threshold)
                     enumber++;
+
+    printf("Edges: %d\n", enumber);
 
     ofstream outbri(output + "/graph");
 
@@ -126,7 +121,7 @@ void graph::build(string rd1, string rd2, string output)
             outbri<<i<<"\t"<<val[i<<1]<<"\t"<<dict[i]<<endl;
 
     for(int i = 2; i <= global_id * 2 + 1; i++)
-        if(val[i] > threshold)
+        if(val[i] >= threshold)
             for(int j = h[i]; j; j = q[j].next)
                 if(val[q[j].to] >= threshold)
                     outbri<<i<<"\t"<<q[j].to<<"\n";
@@ -152,6 +147,7 @@ void graph::build(string rd1, string rd2, string output)
 
     outq.close();
     printf("Weighted graph saved\n");
+
 }
 
 void graph::dfs()
@@ -161,8 +157,7 @@ void graph::dfs()
     for (auto& unitig : cdbg)// Iterate over unitigs of a colored de Bruijn graph
     { 
 
-        DataAccessor<myUnitigData>* da = unitig.getData(); // Get DataAccessor from unitig
-        myUnitigData* data = da->getData(unitig); // Get boolean from DataAccessor
+        myUnitigData* data = unitig.getData(); // Get DataAccessor from unitig
 
         if(data->is_not_visited())// If boolean indicates the unitig was not visited
             dfs_Iterative(unitig);
@@ -171,14 +166,14 @@ void graph::dfs()
 
 
 
-void graph::dfs_Iterative(const UnitigColorMap<myUnitigData>& ucm)
+void graph::dfs_Iterative(const UnitigMap<myUnitigData>& ucm)
 {
-    stack<UnitigColorMap<myUnitigData>> stck;
-    UnitigColorMap<myUnitigData> ucm_tmp(ucm);
+    stack<UnitigMap<myUnitigData>> stck;
+    UnitigMap<myUnitigData> ucm_tmp(ucm);
     stck.push(ucm_tmp);
     
-    DataAccessor<myUnitigData>* da = ucm_tmp.getData();
-    myUnitigData* data = da->getData(ucm_tmp);
+   
+    myUnitigData* data = ucm_tmp.getData();
     
     dict.push_back(ucm_tmp.referenceUnitigToString());
     data->set_visited();
@@ -189,15 +184,14 @@ void graph::dfs_Iterative(const UnitigColorMap<myUnitigData>& ucm)
         ucm_tmp = stck.top();
         stck.pop();
 
-        da = ucm_tmp.getData();
-        data = da->getData(ucm_tmp);
+        data = ucm_tmp.getData();
         string s1 = dict[data->id];
 
         for (auto& successor : ucm_tmp.getSuccessors()) 
         {
-            DataAccessor<myUnitigData>* su_da = successor.getData();
-            myUnitigData* su_data = su_da->getData(successor);
-           
+            myUnitigData* su_data = successor.getData();
+            edges++;
+
             if(su_data->is_not_visited())
             {
                 stck.push(successor);
@@ -227,9 +221,9 @@ void graph::dfs_Iterative(const UnitigColorMap<myUnitigData>& ucm)
 
         for (auto& predecessor : ucm_tmp.getPredecessors()) 
         {
-            DataAccessor<myUnitigData>* su_da = predecessor.getData();
-            myUnitigData* su_data = su_da->getData(predecessor);
-           
+            myUnitigData* su_data = predecessor.getData();
+            edges++;
+
             if(su_data->is_not_visited())
             {
                 stck.push(predecessor);
@@ -266,7 +260,7 @@ void graph::add(int a, int b)
 }
 
 
-void graph::init(string read, ColoredCDBG<myUnitigData>& ccdbg)
+void graph::init(string read, CompactedDBG<myUnitigData>& ccdbg)
 {
     int pos, length;
     
@@ -277,7 +271,7 @@ void graph::init(string read, ColoredCDBG<myUnitigData>& ccdbg)
 
     while(pos + kmer - 1 < length)
     {
-        UnitigMap<DataAccessor<myUnitigData>, DataStorage<myUnitigData>> tmp = ccdbg.findUnitig(s, pos, length);
+        auto tmp = ccdbg.findUnitig(s, pos, length);
         if(tmp.isEmpty)
         {
             pos++;
@@ -286,8 +280,7 @@ void graph::init(string read, ColoredCDBG<myUnitigData>& ccdbg)
         {
             int l = tmp.len;
 
-            DataAccessor<myUnitigData>* sda = tmp.getData();
-            myUnitigData* sdata = sda->getData(tmp);
+            myUnitigData* sdata = tmp.getData();
 
             int k = sdata->id;
             if(countv[k].empty())
@@ -302,7 +295,7 @@ void graph::init(string read, ColoredCDBG<myUnitigData>& ccdbg)
     }
 }
 
-void graph::get_Eclass(string l, string r, int id, ColoredCDBG<myUnitigData>& ccdbg)
+void graph::get_Eclass(string l, string r, int id, CompactedDBG<myUnitigData>& ccdbg)
 {
     int posh, post, length;
     int k_length = ccdbg.getK();
@@ -314,22 +307,20 @@ void graph::get_Eclass(string l, string r, int id, ColoredCDBG<myUnitigData>& cc
     const char* s = l.c_str();
     string refl, refr;
     //cout<<l<<" "<<r<<endl;
-    UnitigMap<DataAccessor<myUnitigData>, DataStorage<myUnitigData>> lnode = ccdbg.findUnitig(s, post, length);
+    auto lnode = ccdbg.findUnitig(s, post, length);
 
     if(lnode.isEmpty)
         return;
     const char* s1 = r.c_str();
 
-    UnitigMap<DataAccessor<myUnitigData>, DataStorage<myUnitigData>> rnode = ccdbg.findUnitig(s1, posh, k_length);
+    auto rnode = ccdbg.findUnitig(s1, posh, k_length);
 
     if(rnode.isEmpty)
         return;
 
-    DataAccessor<myUnitigData>* lda = lnode.getData();
-    myUnitigData* ldata = lda->getData(lnode);
+    myUnitigData* ldata = lnode.getData();
 
-    DataAccessor<myUnitigData>* rda = rnode.getData();
-    myUnitigData* rdata = rda->getData(rnode);
+    myUnitigData* rdata = rnode.getData();
 
 
     string stringl = lnode.referenceUnitigToString();
